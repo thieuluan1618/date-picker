@@ -4,6 +4,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 const tomorrow = dayjs().add(1, 'day');
@@ -24,8 +25,11 @@ export default function ClearableDateTimePicker() {
             onChange={(newValue) => setValue(newValue)}
             disableFuture
             views={['year', 'month', 'day']}
+            slots={{
+              clearIcon: ClearIcon,
+            }}
             slotProps={{
-               actions: ['accept', 'cancel'],
+              field: { clearable: true, onClear: () => setValue(null) },
             }}
           />
         </DemoItem>
