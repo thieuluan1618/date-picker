@@ -7,59 +7,24 @@ import { DatePicker } from '@mui/x-date-pickers-pro';
 import ClearIcon from '@mui/icons-material/Clear';
 import { TextField } from '@mui/material';
 
-const CustomTextField = (props) => {
-  const handleClick = (event) => {
-    // Call original onClick if it exists
-    if (props.onClick) {
-      props.onClick(event);
-    }
-    
-    // Check if click is on or contains MuiPickersSectionList-root
-    const sectionListElement = event.target.closest('.MuiPickersSectionList-root');
-    if (sectionListElement) {
-      logEvent('Click detected via custom TextField');
-    }
-  };
-
-  const handleKeyDown = (event) => {
-    // Call original onKeyDown if it exists
-    if (props.onKeyDown) {
-      props.onKeyDown(event);
-    }
-    
-    // Check if keydown is on MuiPickersSectionList-root
-    const sectionListElement = event.target.closest('.MuiPickersSectionList-root');
-    if (sectionListElement) {
-      logEvent(`KeyDown via custom TextField: ${event.key}`);
-    }
-  };
-
-  return (
-    <TextField
-      {...props}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-    />
-  );
-};
-
-
 const tomorrow = dayjs().add(1, 'day');
 
 export default function ClearableDateTimePicker() {
   const [value, setValue] = React.useState(tomorrow);
   const [open, setOpen] = React.useState(false);
-  const test = React.useRef(null);
 
+  const handleClick = (event) => {
+    // Check if click is on or contains MuiPickersSectionList-root
+    const sectionListElement = event.target.closest('.MuiPickersSectionList-root');
+    if (sectionListElement) {
+      setOpen(true);
+    }
+  };
 
-  const handleOpenChange = (value) => {
-    setOpen(value);
-  }
-
-  const handleClear = (e) => {
-    e.preventDefault();
-    setValue(null)
-  }
+  // const handleClear = (e) => {
+  //   e.preventDefault();
+  //   setValue(null)
+  // }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -79,27 +44,27 @@ export default function ClearableDateTimePicker() {
             slots={{
               // clearIcon: () => <div>Clear ICON</div>,
               openPickerButton: () => null,
-              clearButton: () => <div onClick={handleClear}>Clear BUTTON</div>
+              clearButton: ClearIcon
             }}
-            onViewChange={() => {console.log('changeeeeee')}}
+            sx={{
+              '& .MuiPickersSectionList-root': {
+                // Your custom styles here
+                width: 'fit-content',
+                '&:hover': {
+                  cursor: 'pointer',
+                }
+              }
+            }}
+          
             slotProps={{
               textField: {
                 clearable: true,
                 onClick: (event) => {
-                  console.log(event);
-                  setOpen(!open);
-                  console.log('event => ', event)
-                  // console.log('test');
-                  
-                  // Your click handler logic here
+                  handleClick(event)// Your click handler logic here
                 },
                 InputProps: {
-                  fullWidth: true,
-                  inputRef: test,
-                  inputcomponent: () => 'TEST'
+                  fullWidth: false,
                 },
-                elements: () => <div>TEST</div>
-               
               },
               
             }}
